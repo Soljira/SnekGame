@@ -1,20 +1,92 @@
 package com.example.snekgame
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.view.MotionEvent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.widget.ImageButton
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
+    @SuppressLint("MissingInflatedId", "ClickableViewAccessibility", "SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        var isPressed:Boolean = false
+
+        val intentPlayActivity = Intent(this, PlayActivity::class.java)
+        // TODO: Make a new intent for each button
+
+
+        // Changes the button image to a pressed version of it
+        var buttonPlay:ImageButton = findViewById(R.id.btnPlay)
+        var buttonInstructions:ImageButton = findViewById(R.id.btnInstructions)
+        var buttonSettings:ImageButton = findViewById(R.id.btnSettings)
+        var buttonQuit:ImageButton = findViewById(R.id.btnQuit)
+
+        // TODO: Make it so that button_play_pressed changes to button_play ONLY IF the user
+        //       lets go of the button
+        buttonPlay.setOnClickListener {
+            // If it's ugly, switch back to simple if-else statement and drop the delay
+            if (!isPressed)
+                isPressed = true
+                buttonPlay.setBackgroundResource(R.drawable.button_play_pressed)
+
+            lifecycleScope.launch {
+                delay(200)
+                buttonPlay.setBackgroundResource(R.drawable.button_play)
+                isPressed = false
+            }
+
+            startActivity(intentPlayActivity)
         }
+
+        buttonInstructions.setOnClickListener {
+            // If it's ugly, switch back to simple if-else statement and drop the delay
+            if (!isPressed)
+                isPressed = true
+            buttonInstructions.setBackgroundResource(R.drawable.button_instructions_pressed)
+
+            lifecycleScope.launch {
+                delay(200)
+                buttonInstructions.setBackgroundResource(R.drawable.button_instructions)
+                isPressed = false
+            }
+        }
+
+        buttonSettings.setOnClickListener {
+            // If it's ugly, switch back to simple if-else statement and drop the delay
+            if (!isPressed)
+                isPressed = true
+            buttonSettings.setBackgroundResource(R.drawable.button_settings_pressed)
+
+            lifecycleScope.launch {
+                delay(200)
+                buttonSettings.setBackgroundResource(R.drawable.button_settings)
+                isPressed = false
+            }
+        }
+
+        buttonQuit.setOnClickListener {
+            // If it's ugly, switch back to simple if-else statement and drop the delay
+            if (!isPressed)
+                isPressed = true
+            buttonQuit.setBackgroundResource(R.drawable.button_quit_pressed)
+
+            lifecycleScope.launch {
+                delay(200)
+                buttonQuit.setBackgroundResource(R.drawable.button_quit)
+                isPressed = false
+                exitProcess(0)
+            }
+
+        }
+
     }
 }
