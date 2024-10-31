@@ -23,8 +23,12 @@ class MainActivity : AppCompatActivity() {
         val intentPlayActivity = Intent(this, PlayActivity::class.java)
         // TODO: Make a new intent for each button
         val intentInstructionsActivity = Intent(this, InstructionsActivity::class.java)
+        val intentAboutActivity = Intent(this, AboutActivity::class.java)
 
         // TODO: About button
+
+        // TODO: Settings button
+
 
 
         // Changes the button image to a pressed version of it
