@@ -25,28 +25,22 @@ class MainActivity : AppCompatActivity() {
         val intentInstructionsActivity = Intent(this, InstructionsActivity::class.java)
         val intentAboutActivity = Intent(this, AboutActivity::class.java)
 
-        // TODO: About button
-
-        // TODO: Settings button
-
-
-
-        // Changes the button image to a pressed version of it
+        // Button initializations
         var buttonPlay:ImageButton = findViewById(R.id.btnPlay)
         var buttonInstructions:ImageButton = findViewById(R.id.btnInstructions)
         var buttonSettings:ImageButton = findViewById(R.id.btnSettings)
         var buttonAbout:ImageButton = findViewById(R.id.btnAbout)
         var buttonQuit:ImageButton = findViewById(R.id.btnQuit)
 
-        // TODO: Make it so that button_play_pressed changes to button_play ONLY IF the user
-        //       lets go of the button
-
+        // TODO: Make it so that button_play_pressed changes to button_play ONLY IF the user lets go of the button
         // TODO: Add a fire animation and music in the background
+
+        // Note to self: find a way to make these less repetitive. Maybe switch cases
         buttonPlay.setOnClickListener {
             // If it's ugly, switch back to simple if-else statement and drop the delay
             if (!isPressed)
                 isPressed = true
-                buttonPlay.setBackgroundResource(R.drawable.button_play_pressed)
+                buttonPlay.setBackgroundResource(R.drawable.button_play_pressed)    // Changes the button image to a pressed version of it
 
             lifecycleScope.launch {
                 delay(200)
@@ -58,7 +52,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         buttonInstructions.setOnClickListener {
-            // If it's ugly, switch back to simple if-else statement and drop the delay
             if (!isPressed)
                 isPressed = true
             buttonInstructions.setBackgroundResource(R.drawable.button_instructions_pressed)
@@ -68,10 +61,10 @@ class MainActivity : AppCompatActivity() {
                 buttonInstructions.setBackgroundResource(R.drawable.button_instructions)
                 isPressed = false
             }
+            startActivity(intentInstructionsActivity)
         }
 
         buttonSettings.setOnClickListener {
-            // If it's ugly, switch back to simple if-else statement and drop the delay
             if (!isPressed)
                 isPressed = true
             buttonSettings.setBackgroundResource(R.drawable.button_settings_pressed)
@@ -84,7 +77,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         buttonAbout.setOnClickListener {
-            // If it's ugly, switch back to simple if-else statement and drop the delay
             if (!isPressed)
                 isPressed = true
             buttonAbout.setBackgroundResource(R.drawable.button_about_pressed)
@@ -94,10 +86,10 @@ class MainActivity : AppCompatActivity() {
                 buttonAbout.setBackgroundResource(R.drawable.button_about)
                 isPressed = false
             }
+            startActivity(intentAboutActivity)
         }
 
         buttonQuit.setOnClickListener {
-            // If it's ugly, switch back to simple if-else statement and drop the delay
             if (!isPressed)
                 isPressed = true
             buttonQuit.setBackgroundResource(R.drawable.button_quit_pressed)
@@ -111,5 +103,5 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-    }
+    }  // End of onCreate class
 }
