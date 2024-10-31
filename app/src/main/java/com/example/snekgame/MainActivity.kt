@@ -22,16 +22,22 @@ class MainActivity : AppCompatActivity() {
 
         val intentPlayActivity = Intent(this, PlayActivity::class.java)
         // TODO: Make a new intent for each button
+        val intentInstructionsActivity = Intent(this, InstructionsActivity::class.java)
+
+        // TODO: About button
 
 
         // Changes the button image to a pressed version of it
         var buttonPlay:ImageButton = findViewById(R.id.btnPlay)
         var buttonInstructions:ImageButton = findViewById(R.id.btnInstructions)
         var buttonSettings:ImageButton = findViewById(R.id.btnSettings)
+        var buttonAbout:ImageButton = findViewById(R.id.btnAbout)
         var buttonQuit:ImageButton = findViewById(R.id.btnQuit)
 
         // TODO: Make it so that button_play_pressed changes to button_play ONLY IF the user
         //       lets go of the button
+
+        // TODO: Add a fire animation and music in the background
         buttonPlay.setOnClickListener {
             // If it's ugly, switch back to simple if-else statement and drop the delay
             if (!isPressed)
@@ -69,6 +75,19 @@ class MainActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 delay(200)
                 buttonSettings.setBackgroundResource(R.drawable.button_settings)
+                isPressed = false
+            }
+        }
+
+        buttonAbout.setOnClickListener {
+            // If it's ugly, switch back to simple if-else statement and drop the delay
+            if (!isPressed)
+                isPressed = true
+            buttonAbout.setBackgroundResource(R.drawable.button_about_pressed)
+
+            lifecycleScope.launch {
+                delay(200)
+                buttonAbout.setBackgroundResource(R.drawable.button_about)
                 isPressed = false
             }
         }
