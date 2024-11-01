@@ -1,6 +1,7 @@
 package com.example.snekgame
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
@@ -13,15 +14,26 @@ import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
+
+    // static class equivalent
+    companion object {
+        private lateinit var gameContext: Context  // no idea how to fix this lol
+
+        fun getGameContext(): Context {
+            return gameContext
+        }
+    }
+
     @SuppressLint("MissingInflatedId", "ClickableViewAccessibility", "SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        gameContext = this
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         var isPressed:Boolean = false
 
-        val intentPlayActivity = Intent(this, PlayActivity::class.java)
         // TODO: Make a new intent for each button
+        val intentPlayActivity = Intent(this, GamePanelActivity::class.java)
         val intentInstructionsActivity = Intent(this, InstructionsActivity::class.java)
         val intentAboutActivity = Intent(this, AboutActivity::class.java)
 
@@ -49,6 +61,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             startActivity(intentPlayActivity)
+//            setContentView(GamePanel(this))
         }
 
         buttonInstructions.setOnClickListener {
