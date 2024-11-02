@@ -84,10 +84,16 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     fun update(delta : Double) {
 
         // When the user presses the DPAD button
+        // TODO: Rename currentDirection to a more sensible one
         when (currentDirection) {
-            TouchEvents.UP -> {
-                playerFaceDir = GameConstants.Face_Direction.UP
+            TouchEvents.UP -> playerFaceDir = GameConstants.Face_Direction.UP
+            TouchEvents.DOWN -> playerFaceDir = GameConstants.Face_Direction.DOWN
+            TouchEvents.LEFT -> playerFaceDir = GameConstants.Face_Direction.LEFT
+            TouchEvents.RIGHT -> playerFaceDir = GameConstants.Face_Direction.RIGHT
+        }  // End of when block
 
+        when (playerFaceDir) {
+            GameConstants.Face_Direction.UP -> {
                 // Checks if the player sprite reaches the screen boundaries. If yes, stops the player sprite
                 // from moving out the screen
                 if (playerPos.y <= 0)
@@ -95,28 +101,26 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
                 else
                     playerPos.y -= delta.toFloat() * 500
             }
-            TouchEvents.DOWN -> {
-                playerFaceDir = GameConstants.Face_Direction.DOWN
+            GameConstants.Face_Direction.DOWN -> {
                 if (playerPos.y >= 1520)
                     playerPos.y += 0
                 else
                     playerPos.y += delta.toFloat() * 500
             }
-            TouchEvents.LEFT -> {
-                playerFaceDir = GameConstants.Face_Direction.LEFT
+
+            GameConstants.Face_Direction.LEFT -> {
                 if (playerPos.x <= 0)
                     playerPos.x -= 0
                 else
                     playerPos.x -= delta.toFloat() * 500
             }
-            TouchEvents.RIGHT -> {
-                playerFaceDir = GameConstants.Face_Direction.RIGHT
+            GameConstants.Face_Direction.RIGHT -> {
                 if (playerPos.x >= 980)
                     playerPos.x += 0
                 else
                     playerPos.x += delta.toFloat() * 500
             }
-        }  // End of when block
+        }
 
         updateAnimation()
     }  // End of update function
