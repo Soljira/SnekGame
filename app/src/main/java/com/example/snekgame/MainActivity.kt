@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.ImageButton
@@ -30,7 +31,8 @@ class MainActivity : AppCompatActivity() {
         gameContext = this
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        var isPressed:Boolean = false
+
+        var isPressed : Boolean = false
 
         // TODO: Make a new intent for each button
         val intentPlayActivity = Intent(this, GamePanelActivity::class.java)
@@ -38,11 +40,11 @@ class MainActivity : AppCompatActivity() {
         val intentAboutActivity = Intent(this, AboutActivity::class.java)
 
         // Button initializations
-        var buttonPlay:ImageButton = findViewById(R.id.btnPlay)
-        var buttonInstructions:ImageButton = findViewById(R.id.btnInstructions)
-        var buttonSettings:ImageButton = findViewById(R.id.btnSettings)
-        var buttonAbout:ImageButton = findViewById(R.id.btnAbout)
-        var buttonQuit:ImageButton = findViewById(R.id.btnQuit)
+        var buttonPlay : ImageButton = findViewById(R.id.btnPlay)
+        var buttonInstructions : ImageButton = findViewById(R.id.btnInstructions)
+        var buttonSettings : ImageButton = findViewById(R.id.btnSettings)
+        var buttonAbout : ImageButton = findViewById(R.id.btnAbout)
+        var buttonQuit : ImageButton = findViewById(R.id.btnQuit)
 
         // TODO: Make it so that button_play_pressed changes to button_play ONLY IF the user lets go of the button
         // TODO: Add a fire animation and music in the background

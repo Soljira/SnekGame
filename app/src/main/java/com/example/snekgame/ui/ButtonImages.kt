@@ -1,5 +1,9 @@
 package com.example.snekgame.ui
 
+/**
+ * Handles all the button assets and turns them into VectorDrawables
+ */
+
 import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat  // added new dependencies in build.gradle.kts

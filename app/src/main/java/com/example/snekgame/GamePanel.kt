@@ -14,6 +14,7 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import com.example.snekgame.entities.GameCharacters
+import com.example.snekgame.environments.Floor
 import com.example.snekgame.helpers.GameConstants
 import com.example.snekgame.inputs.TouchEvents
 import java.util.Random
@@ -46,7 +47,7 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     private var lastDirectionChange : Long = System.currentTimeMillis()
 
     // address for the spritesheet
-    private var playerAnimateIndexY = 0
+    private var entityAnimateIndexY = 0
     private var playerFaceDir = GameConstants.Face_Direction.RIGHT
 
     private var animationTick = 0
@@ -59,7 +60,7 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
         gameLoop = GameLoop(this)
         touchEvents = TouchEvents(this)
 
-        soulPos = PointF(random.nextInt(1080).toFloat(), random.nextInt(1920).toFloat())
+        soulPos = PointF(random.nextInt(980).toFloat(), random.nextInt(1520).toFloat())
     }
     private val scorePaint = Paint().apply {
         color = Color.RED   // Set text color
@@ -75,11 +76,11 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
         //Score top left
         canvas.drawText("Score: $score", 50f, 100f, scorePaint)
         // Draws the player character to the canvas
-        canvas.drawBitmap(GameCharacters.PLAYER.getSprite(playerAnimateIndexY, playerFaceDir)!!, playerPos.x, playerPos.y, null)
+        canvas.drawBitmap(GameCharacters.PLAYER.getSprite(0, playerFaceDir)!!, playerPos.x, playerPos.y, null)
 
 
         // Draws the soul to the canvas
-        canvas.drawBitmap(GameCharacters.SOUL.getSprite(playerAnimateIndexY, soulDirection)!!, soulPos.x, soulPos.y, null)
+        canvas.drawBitmap(GameCharacters.SOUL.getSprite(entityAnimateIndexY, soulDirection)!!, soulPos.x, soulPos.y, null)
 
         touchEvents.draw(canvas)
 
@@ -134,20 +135,20 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     fun updateAnimation() {
         animationTick++
 
-        // When animationTick reaches animationSpeed, reset it to 0 and increment playerAnimateIndexY
+        // When animationTick reaches animationSpeed, reset it to 0 and increment entityAnimateIndexY
         if (animationTick >= animationSpeed) {
             animationTick = 0
-            playerAnimateIndexY++  // Moves to the next animation frame
+            entityAnimateIndexY++  // Moves to the next animation frame
 
             // Resets the animation loop
-            if (playerAnimateIndexY >= 4)
-                playerAnimateIndexY = 0
+            if (entityAnimateIndexY >= 4)
+                entityAnimateIndexY = 0
         }
     }
     private fun checkSoulCollision() {
         if (playerPos.distance(soulPos) < 50) {  // If player is close to the soul
             score++  // Increase score
-            soulPos = PointF(random.nextInt(1080).toFloat(), random.nextInt(1920).toFloat())  // Move soul to new random position
+            soulPos = PointF(random.nextInt(980).toFloat(), random.nextInt(1520).toFloat())  // Move soul to new random position
         }
     }
     @SuppressLint("ClickableViewAccessibility")
