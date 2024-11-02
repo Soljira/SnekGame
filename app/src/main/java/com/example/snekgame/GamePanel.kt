@@ -28,7 +28,6 @@ import java.util.Random
 // super(context) is no longer needed as Kotlin automatically does that in SurfaceView(context)
 class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback {
 
-    private val redPaint = Paint()
     private val holder = getHolder()
     private val random = Random()
     private var gameLoop = GameLoop(this)
@@ -60,22 +59,33 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
 
     init {
         holder.addCallback(this)
-        redPaint.color = Color.RED
         gameLoop = GameLoop(this)
         touchEvents = TouchEvents(this)
 
-        soulPos = PointF(random.nextInt(980).toFloat(), random.nextInt(1520).toFloat())
+        soulPos = PointF(random.nextInt(980).toFloat(), random.nextInt(1242).toFloat())
 
-        val testArrayWithIds = Array(15) { IntArray(20) }
+        // See reference map.png in assets folder to see what the map looks like
+        // 12 x 14 map (16x16 pixels resolution)
+        val spriteIds = arrayOf(
+            intArrayOf(254, 192, 210, 210, 210, 210, 210, 210, 210, 193, 253, 188),
+            intArrayOf(192, 211, 275, 278, 276, 275, 276, 275, 279, 209, 193, 188),
+            intArrayOf(189, 278, 169, 171, 166, 167, 279, 275, 278, 276, 187, 188),
+            intArrayOf(189, 275, 190, 187, 254, 189, 276, 275, 278, 279, 187, 188),
+            intArrayOf(189, 276, 190, 209, 210, 211, 165, 166, 166, 167, 187, 188),
+            intArrayOf(189, 278, 212, 275, 279, 275, 187, 188, 253, 189, 187, 188),
+            intArrayOf(194, 279, 275, 278, 276, 165, 215, 188, 254, 189, 187, 188),
+            intArrayOf(216, 278, 275, 275, 276, 187, 188, 188, 188, 189, 187, 188),
+            intArrayOf(189, 275, 165, 166, 167, 187, 254, 188, 188, 189, 187, 188),
+            intArrayOf(189, 276, 187, 253, 189, 209, 210, 210, 210, 211, 187, 188),
+            intArrayOf(189, 278, 209, 210, 211, 278, 275, 275, 279, 276, 187, 188),
+            intArrayOf(174, 167, 275, 278, 276, 275, 276, 275, 278, 165, 196, 210),
+            intArrayOf(215, 214, 166, 166, 166, 166, 166, 166, 166, 215, 211, 278)
+        )
 
-        // Adds a test map to the canvas
-        for (j in testArrayWithIds.indices) {
-            Arrays.fill(testArrayWithIds[j], 245)  // 245 is the ID of the tiles based on the spritesheet
-        }
-
-        testMap = GameMap(testArrayWithIds)
-
+        // Initialize the GameMap with the provided sprite IDs
+        testMap = GameMap(spriteIds)
     }
+
     private val scorePaint = Paint().apply {
         color = Color.RED   // Set text color
         textSize = 60f        // Set text size
@@ -88,13 +98,12 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
         // Background
         canvas.drawColor(Color.BLACK)  // Resets the canvas to a black bg whenever the user touches the screen
 
-        testMap.draw(canvas)
+        testMap.draw(canvas)    // Paints the canvas with the map
 
         //Score top left
         canvas.drawText("Score: $score", 50f, 100f, scorePaint)
         // Draws the player character to the canvas
         canvas.drawBitmap(GameCharacters.PLAYER.getSprite(0, playerFaceDir)!!, playerPos.x, playerPos.y, null)
-
 
         // Draws the soul to the canvas
         canvas.drawBitmap(GameCharacters.SOUL.getSprite(entityAnimateIndexY, soulDirection)!!, soulPos.x, soulPos.y, null)
@@ -122,26 +131,26 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
                 if (playerPos.y <= 0)
                     playerPos.y -= 0
                 else
-                    playerPos.y -= delta.toFloat() * 500
+                    playerPos.y -= delta.toFloat() * GameConstants.Player.SPEED
             }
             GameConstants.Face_Direction.DOWN -> {
-                if (playerPos.y >= 1520)
+                if (playerPos.y >= 1242)
                     playerPos.y += 0
                 else
-                    playerPos.y += delta.toFloat() * 500
+                    playerPos.y += delta.toFloat() * GameConstants.Player.SPEED
             }
 
             GameConstants.Face_Direction.LEFT -> {
                 if (playerPos.x <= 0)
                     playerPos.x -= 0
                 else
-                    playerPos.x -= delta.toFloat() * 500
+                    playerPos.x -= delta.toFloat() * GameConstants.Player.SPEED
             }
             GameConstants.Face_Direction.RIGHT -> {
                 if (playerPos.x >= 980)
                     playerPos.x += 0
                 else
-                    playerPos.x += delta.toFloat() * 500
+                    playerPos.x += delta.toFloat() * GameConstants.Player.SPEED
             }
         }
 
@@ -165,7 +174,7 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     private fun checkSoulCollision() {
         if (playerPos.distance(soulPos) < 50) {  // If player is close to the soul
             score++  // Increase score
-            soulPos = PointF(random.nextInt(980).toFloat(), random.nextInt(1520).toFloat())  // Move soul to new random position
+            soulPos = PointF(random.nextInt(980).toFloat(), random.nextInt(1242).toFloat())  // Move soul to new random position
         }
     }
     @SuppressLint("ClickableViewAccessibility")

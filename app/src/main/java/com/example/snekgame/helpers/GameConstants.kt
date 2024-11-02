@@ -12,8 +12,16 @@ class GameConstants {
     class Sprite {
         companion object {
             const val DEFAULT_SIZE = 16
+            // Use 8 when testing with the emulator, otherwise, use 6 for real phones
             const val SCALE_MULTIPLIER = 6
             const val SIZE = DEFAULT_SIZE * SCALE_MULTIPLIER
+        }
+    }
+
+    class Player {
+        companion object {
+            // default is 300
+            const val SPEED = 600
         }
     }
 }
