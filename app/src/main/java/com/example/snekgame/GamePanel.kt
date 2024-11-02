@@ -15,11 +15,13 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import com.example.snekgame.entities.GameCharacters
 import com.example.snekgame.helpers.GameConstants
+import com.example.snekgame.inputs.TouchEvents
 import java.util.Random
 import java.util.ArrayList
 
 // TODO: Animate the snake and the souls
 // TODO: Put snake player in an ArrayList
+// TODO: Whenever player touches a soul, increase the score count by 1 and add a new soul to the screen, removing the eaten soul
 
 // : -> extends
 // super(context) is no longer needed as Kotlin automatically does that in SurfaceView(context)
@@ -29,8 +31,14 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     private val holder = getHolder()
     private val random = Random()
     private var gameLoop = GameLoop(this)
+    private var touchEvents: TouchEvents
+
+    // Old variables for tracking player sprite position; now using playerPos
     private var x : Float = 0F
     private var y : Float = 0F
+
+    // Player position coordinates
+    private var playerPos : PointF = PointF(540F, 960F)  // center position
 
     private var soulPos : PointF = PointF(0F, 0F)
     private var soulDirection = GameConstants.Face_Direction.DOWN
@@ -44,13 +52,15 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     private var animationTick = 0
     private var animationSpeed = 10
 
+    private var currentDirection = TouchEvents.NONE  // For tracking the last DPAD button pressed by the user
+
     init {
         holder.addCallback(this)
         redPaint.color = Color.RED
         gameLoop = GameLoop(this)
+        touchEvents = TouchEvents(this)
 
         soulPos = PointF(random.nextInt(1080).toFloat(), random.nextInt(1920).toFloat())
-
     }
 
     fun render() {
@@ -60,20 +70,56 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
         canvas.drawColor(Color.BLACK)  // Resets the canvas to a black bg whenever the user touches the screen
 
         // Draws the player character to the canvas
-        canvas.drawBitmap(GameCharacters.PLAYER.getSprite(playerAnimateIndexY, playerFaceDir)!!, x, y, null)
+        canvas.drawBitmap(GameCharacters.PLAYER.getSprite(playerAnimateIndexY, playerFaceDir)!!, playerPos.x, playerPos.y, null)
 
 
         // Draws the soul to the canvas
         canvas.drawBitmap(GameCharacters.SOUL.getSprite(playerAnimateIndexY, soulDirection)!!, soulPos.x, soulPos.y, null)
+
+        touchEvents.draw(canvas)
 
         holder.unlockCanvasAndPost(canvas)  // Displays the canvas
     }
 
     fun update(delta : Double) {
 
-        updateAnimation()
+        // When the user presses the DPAD button
+        when (currentDirection) {
+            TouchEvents.UP -> {
+                playerFaceDir = GameConstants.Face_Direction.UP
 
-    }
+                // Checks if the player sprite reaches the screen boundaries. If yes, stops the player sprite
+                // from moving out the screen
+                if (playerPos.y <= 0)
+                    playerPos.y -= 0
+                else
+                    playerPos.y -= delta.toFloat() * 500
+            }
+            TouchEvents.DOWN -> {
+                playerFaceDir = GameConstants.Face_Direction.DOWN
+                if (playerPos.y >= 1520)
+                    playerPos.y += 0
+                else
+                    playerPos.y += delta.toFloat() * 500
+            }
+            TouchEvents.LEFT -> {
+                playerFaceDir = GameConstants.Face_Direction.LEFT
+                if (playerPos.x <= 0)
+                    playerPos.x -= 0
+                else
+                    playerPos.x -= delta.toFloat() * 500
+            }
+            TouchEvents.RIGHT -> {
+                playerFaceDir = GameConstants.Face_Direction.RIGHT
+                if (playerPos.x >= 980)
+                    playerPos.x += 0
+                else
+                    playerPos.x += delta.toFloat() * 500
+            }
+        }  // End of when block
+
+        updateAnimation()
+    }  // End of update function
 
     fun updateAnimation() {
         animationTick++
@@ -92,22 +138,15 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         // Only adds the snake to the canvas if the user is pressing down
-        if (event!!.action == MotionEvent.ACTION_DOWN) {
-            // Makes it so that the snake player faces the direction where the user finger is
-            var newX : Float = event.x
-            var newY : Float = event.y
-
-            var xDifference : Float = kotlin.math.abs(newX - x)
-            var yDifference : Float = kotlin.math.abs(newY - y)
-
-            playerFaceDir = if (xDifference > yDifference) {
-                if (newX > x) GameConstants.Face_Direction.RIGHT else GameConstants.Face_Direction.LEFT
-            } else {
-                if (newY > y) GameConstants.Face_Direction.DOWN else GameConstants.Face_Direction.UP
+        when (event?.action) {
+            // when user is pressing down the button
+            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+                currentDirection = touchEvents.handleTouch(event.x, event.y, true)
             }
-
-            x = newX
-            y = newY
+            // when user releases the button
+            MotionEvent.ACTION_UP -> {
+                currentDirection = touchEvents.handleTouch(event.x, event.y, false)
+            }
         }
         return true
     }
@@ -118,10 +157,10 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     }
 
     override fun surfaceChanged(surfaceHolder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        // Not implemented in the original Java code
+
     }
 
     override fun surfaceDestroyed(surfaceHolder: SurfaceHolder) {
-        // Not implemented in the original Java code
+
     }
 }
