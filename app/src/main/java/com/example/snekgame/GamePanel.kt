@@ -14,15 +14,15 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import com.example.snekgame.entities.GameCharacters
-import com.example.snekgame.environments.Floor
 import com.example.snekgame.helpers.GameConstants
 import com.example.snekgame.inputs.TouchEvents
+import com.example.snekgame.environments.Floor
+import com.example.snekgame.environments.GameMap
+import java.util.Arrays
 import java.util.Random
-
 
 // TODO: Animate the snake and the souls
 // TODO: Put snake player in an ArrayList
-// TODO: Whenever player touches a soul, increase the score count by 1 and add a new soul to the screen, removing the eaten soul
 
 // : -> extends
 // super(context) is no longer needed as Kotlin automatically does that in SurfaceView(context)
@@ -54,6 +54,10 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     private var animationSpeed = 10
     private var currentDirection = TouchEvents.NONE  // For tracking the last DPAD button pressed by the user
     private var score = 0  // Track player score
+
+    // Testing Map
+    private val testMap : GameMap
+
     init {
         holder.addCallback(this)
         redPaint.color = Color.RED
@@ -61,6 +65,16 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
         touchEvents = TouchEvents(this)
 
         soulPos = PointF(random.nextInt(980).toFloat(), random.nextInt(1520).toFloat())
+
+        val testArrayWithIds = Array(15) { IntArray(20) }
+
+        // Adds a test map to the canvas
+        for (j in testArrayWithIds.indices) {
+            Arrays.fill(testArrayWithIds[j], 245)  // 245 is the ID of the tiles based on the spritesheet
+        }
+
+        testMap = GameMap(testArrayWithIds)
+
     }
     private val scorePaint = Paint().apply {
         color = Color.RED   // Set text color
@@ -73,6 +87,9 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
 
         // Background
         canvas.drawColor(Color.BLACK)  // Resets the canvas to a black bg whenever the user touches the screen
+
+        testMap.draw(canvas)
+
         //Score top left
         canvas.drawText("Score: $score", 50f, 100f, scorePaint)
         // Draws the player character to the canvas
