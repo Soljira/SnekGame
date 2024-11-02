@@ -2,7 +2,7 @@
  * Handles the buttons using SurfaceView, which apparently uses multithreading to separate input from gameplay
  * Tutorial: https://www.youtube.com/watch?v=QV1uCncZ2vc&list=PL4rzdwizLaxYqSDifOi7mUtyzdM6R_2sT&index=2
  */
-package com.example.snekgame;
+package com.example.snekgame
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -17,7 +17,7 @@ import com.example.snekgame.entities.GameCharacters
 import com.example.snekgame.helpers.GameConstants
 import com.example.snekgame.inputs.TouchEvents
 import java.util.Random
-import java.util.ArrayList
+
 
 // TODO: Animate the snake and the souls
 // TODO: Put snake player in an ArrayList
@@ -51,9 +51,8 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
 
     private var animationTick = 0
     private var animationSpeed = 10
-
     private var currentDirection = TouchEvents.NONE  // For tracking the last DPAD button pressed by the user
-
+    private var score = 0  // Track player score
     init {
         holder.addCallback(this)
         redPaint.color = Color.RED
@@ -62,13 +61,19 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
 
         soulPos = PointF(random.nextInt(1080).toFloat(), random.nextInt(1920).toFloat())
     }
+    private val scorePaint = Paint().apply {
+        color = Color.RED   // Set text color
+        textSize = 60f        // Set text size
+        isAntiAlias = true    // Enable anti-aliasing for smoother text
+    }
 
     fun render() {
         val canvas : Canvas = holder.lockCanvas()  // Prepares the canvas for drawing
 
         // Background
         canvas.drawColor(Color.BLACK)  // Resets the canvas to a black bg whenever the user touches the screen
-
+        //Score top left
+        canvas.drawText("Score: $score", 50f, 100f, scorePaint)
         // Draws the player character to the canvas
         canvas.drawBitmap(GameCharacters.PLAYER.getSprite(playerAnimateIndexY, playerFaceDir)!!, playerPos.x, playerPos.y, null)
 
@@ -123,6 +128,7 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
         }
 
         updateAnimation()
+        checkSoulCollision()
     }  // End of update function
 
     fun updateAnimation() {
@@ -138,7 +144,12 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
                 playerAnimateIndexY = 0
         }
     }
-
+    private fun checkSoulCollision() {
+        if (playerPos.distance(soulPos) < 50) {  // If player is close to the soul
+            score++  // Increase score
+            soulPos = PointF(random.nextInt(1080).toFloat(), random.nextInt(1920).toFloat())  // Move soul to new random position
+        }
+    }
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         // Only adds the snake to the canvas if the user is pressing down
@@ -167,4 +178,9 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     override fun surfaceDestroyed(surfaceHolder: SurfaceHolder) {
 
     }
+}
+
+// Extension function to calculate the distance between two points
+fun PointF.distance(other: PointF): Float {
+    return kotlin.math.sqrt((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y))
 }
