@@ -18,10 +18,17 @@ class GameConstants {
         }
     }
 
+    class Animation {
+        companion object {
+            const val SPEED = 10
+            const val AMOUNT = 4    // How many different sprites there are in each animation
+        }
+    }
+
     class Player {
         companion object {
             // default is 300
-            const val SPEED = 600
+            const val BASE_SPEED = 600
         }
     }
 }

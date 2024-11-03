@@ -13,12 +13,13 @@ import android.graphics.PointF
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import com.example.snekgame.entities.GameCharacters
-import com.example.snekgame.helpers.GameConstants
+
+import com.example.snekgame.entities.Character
+import com.example.snekgame.entities.Player
+import com.example.snekgame.entities.souls.BasicSoul
+
 import com.example.snekgame.inputs.TouchEvents
-import com.example.snekgame.environments.Floor
 import com.example.snekgame.environments.GameMap
-import java.util.Arrays
 import java.util.Random
 
 // TODO: Animate the snake and the souls
@@ -32,37 +33,24 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     private val random = Random()
     private var gameLoop = GameLoop(this)
     private var touchEvents: TouchEvents
-
-    // Old variables for tracking player sprite position; now using playerPos
-    private var x : Float = 0F
-    private var y : Float = 0F
-
-    // Player position coordinates
-    private var playerPos : PointF = PointF(540F, 960F)  // center position
-
-    private var soulPos : PointF = PointF(0F, 0F)
-    private var soulDirection = GameConstants.Face_Direction.DOWN
-
-    private var lastDirectionChange : Long = System.currentTimeMillis()
-
-    // address for the spritesheet
-    private var entityAnimateIndexY = 0
-    private var playerFaceDir = GameConstants.Face_Direction.RIGHT
-
-    private var animationTick = 0
-    private var animationSpeed = 10
-    private var currentDirection = TouchEvents.NONE  // For tracking the last DPAD button pressed by the user
+    private var dpadLastDirection = TouchEvents.NONE  // For tracking the last DPAD button pressed by the user
     private var score = 0  // Track player score
+
+    // TODO: Array for snake head, snake segments, and snake tail. maybe 2d array
 
     // Testing Map
     private val testMap : GameMap
+
+    private val player : Player
+    private val basicSoul : BasicSoul
 
     init {
         holder.addCallback(this)
         gameLoop = GameLoop(this)
         touchEvents = TouchEvents(this)
 
-        soulPos = PointF(random.nextInt(980).toFloat(), random.nextInt(1242).toFloat())
+        player = Player()     // center position
+        basicSoul = BasicSoul(PointF(random.nextInt(980).toFloat(), random.nextInt(1242).toFloat()))
 
         // See reference map.png in assets folder to see what the map looks like
         // 12 x 14 map (16x16 pixels resolution)
@@ -102,79 +90,47 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
 
         //Score top left
         canvas.drawText("Score: $score", 50f, 100f, scorePaint)
-        // Draws the player character to the canvas
-        canvas.drawBitmap(GameCharacters.PLAYER.getSprite(0, playerFaceDir)!!, playerPos.x, playerPos.y, null)
 
-        // Draws the soul to the canvas
-        canvas.drawBitmap(GameCharacters.SOUL.getSprite(entityAnimateIndexY, soulDirection)!!, soulPos.x, soulPos.y, null)
+        drawPlayer(canvas)
+        drawCharacter(canvas, basicSoul)
 
         touchEvents.draw(canvas)
 
         holder.unlockCanvasAndPost(canvas)  // Displays the canvas
     }
 
+    private fun drawPlayer(canvas: Canvas) {
+        canvas.drawBitmap(
+            player.gameCharacterType.getSprite(player.animationIndex, player.facingDirection)!!,
+            player.hitbox.left,
+            player.hitbox.top,
+            null)
+    }
+
+    private fun drawCharacter(canvas: Canvas, character: Character) {
+        canvas.drawBitmap(
+            character.gameCharacterType.getSprite(character.animationIndex, character.facingDirection)!!,
+            character.hitbox.left,
+            character.hitbox.top,
+            null)
+
+    }
+
     fun update(delta : Double) {
-
-        // When the user presses the DPAD button
-        // TODO: Rename currentDirection to a more sensible one
-        when (currentDirection) {
-            TouchEvents.UP -> playerFaceDir = GameConstants.Face_Direction.UP
-            TouchEvents.DOWN -> playerFaceDir = GameConstants.Face_Direction.DOWN
-            TouchEvents.LEFT -> playerFaceDir = GameConstants.Face_Direction.LEFT
-            TouchEvents.RIGHT -> playerFaceDir = GameConstants.Face_Direction.RIGHT
-        }  // End of when block
-
-        when (playerFaceDir) {
-            GameConstants.Face_Direction.UP -> {
-                // Checks if the player sprite reaches the screen boundaries. If yes, stops the player sprite
-                // from moving out the screen
-                if (playerPos.y <= 0)
-                    playerPos.y -= 0
-                else
-                    playerPos.y -= delta.toFloat() * GameConstants.Player.SPEED
-            }
-            GameConstants.Face_Direction.DOWN -> {
-                if (playerPos.y >= 1242)
-                    playerPos.y += 0
-                else
-                    playerPos.y += delta.toFloat() * GameConstants.Player.SPEED
-            }
-
-            GameConstants.Face_Direction.LEFT -> {
-                if (playerPos.x <= 0)
-                    playerPos.x -= 0
-                else
-                    playerPos.x -= delta.toFloat() * GameConstants.Player.SPEED
-            }
-            GameConstants.Face_Direction.RIGHT -> {
-                if (playerPos.x >= 980)
-                    playerPos.x += 0
-                else
-                    playerPos.x += delta.toFloat() * GameConstants.Player.SPEED
-            }
-        }
-
-        updateAnimation()
+        updatePlayerMove(delta)
+        basicSoul.update(delta)
         checkSoulCollision()
     }  // End of update function
 
-    fun updateAnimation() {
-        animationTick++
-
-        // When animationTick reaches animationSpeed, reset it to 0 and increment entityAnimateIndexY
-        if (animationTick >= animationSpeed) {
-            animationTick = 0
-            entityAnimateIndexY++  // Moves to the next animation frame
-
-            // Resets the animation loop
-            if (entityAnimateIndexY >= 4)
-                entityAnimateIndexY = 0
-        }
+    fun updatePlayerMove(delta: Double) {
+        player.setDirection(dpadLastDirection)
+        player.update(delta)
     }
+
     private fun checkSoulCollision() {
-        if (playerPos.distance(soulPos) < 50) {  // If player is close to the soul
+        if (player.position.distance(basicSoul.position) < 50) {  // If player is close to the soul
             score++  // Increase score
-            soulPos = PointF(random.nextInt(980).toFloat(), random.nextInt(1242).toFloat())  // Move soul to new random position
+            basicSoul.position = PointF(random.nextInt(980).toFloat(), random.nextInt(1242).toFloat())  // Move soul to new random position
         }
     }
     @SuppressLint("ClickableViewAccessibility")
@@ -183,11 +139,11 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
         when (event?.action) {
             // when user is pressing down the button
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
-                currentDirection = touchEvents.handleTouch(event.x, event.y, true)
+                dpadLastDirection = touchEvents.handleTouch(event.x, event.y, true)
             }
             // when user releases the button
             MotionEvent.ACTION_UP -> {
-                currentDirection = touchEvents.handleTouch(event.x, event.y, false)
+                dpadLastDirection = touchEvents.handleTouch(event.x, event.y, false)
             }
         }
         return true
