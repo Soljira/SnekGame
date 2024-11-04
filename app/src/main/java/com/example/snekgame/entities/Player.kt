@@ -15,7 +15,7 @@ class Player : Character(
             // Checks if the player sprite reaches the screen boundaries. If yes, stops the player sprite
             // from moving out the screen
             GameConstants.Face_Direction.UP -> {
-                if (position.y > 0) {
+                if (position.y > GameConstants.Boundary.TOP) {
                     position = PointF(
                         position.x,
                         position.y - delta.toFloat() * GameConstants.Player.BASE_SPEED
@@ -23,7 +23,7 @@ class Player : Character(
                 }
             }
             GameConstants.Face_Direction.DOWN -> {
-                if (position.y < 1242) {
+                if (position.y < GameConstants.Boundary.BOTTOM) {
                     position = PointF(
                         position.x,
                         position.y + delta.toFloat() * GameConstants.Player.BASE_SPEED
@@ -31,7 +31,7 @@ class Player : Character(
                 }
             }
             GameConstants.Face_Direction.LEFT -> {
-                if (position.x > 0) {
+                if (position.x > GameConstants.Boundary.LEFT) {
                     position = PointF(
                         position.x - delta.toFloat() * GameConstants.Player.BASE_SPEED,
                         position.y
@@ -39,7 +39,7 @@ class Player : Character(
                 }
             }
             GameConstants.Face_Direction.RIGHT -> {
-                if (position.x < 980) {
+                if (position.x < GameConstants.Boundary.RIGHT) {
                     position = PointF(
                         position.x + delta.toFloat() * GameConstants.Player.BASE_SPEED,
                         position.y

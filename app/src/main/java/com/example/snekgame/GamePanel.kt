@@ -6,13 +6,17 @@ package com.example.snekgame
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
+import android.graphics.drawable.VectorDrawable
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import androidx.core.content.ContextCompat
 
 import com.example.snekgame.entities.Character
 import com.example.snekgame.entities.Player
@@ -20,6 +24,7 @@ import com.example.snekgame.entities.souls.BasicSoul
 
 import com.example.snekgame.inputs.TouchEvents
 import com.example.snekgame.environments.GameMap
+import com.example.snekgame.helpers.GameConstants
 import java.util.Random
 
 // TODO: Animate the snake and the souls
@@ -41,6 +46,17 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     // Testing Map
     private val testMap : GameMap
 
+    // UI elements
+    private val gameFrame = ContextCompat.getDrawable(context, R.drawable.game_frame) as VectorDrawable
+//    private val pauseButton = ContextCompat.getDrawable(context, R.drawable.game_frame) as VectorDrawable
+    private val backgroundBitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.dpad_background)
+    private val scaledBackground = Bitmap.createScaledBitmap(
+        backgroundBitmap,
+        GameConstants.Frame.WIDTH,  // Width of the canvas
+        700,  // Height of the canvas
+        false
+    )
+
     private val player : Player
     private val basicSoul : BasicSoul
 
@@ -54,7 +70,10 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
         touchEvents = TouchEvents(this)
 
         player = Player()     // center position
-        basicSoul = BasicSoul(PointF(random.nextInt(980).toFloat(), random.nextInt(1242).toFloat()))
+        basicSoul = BasicSoul(PointF(
+            (80 + random.nextInt(GameConstants.Boundary.RIGHT - 80 + 1)).toFloat(),  // x between 80 and 933
+            (80 + random.nextInt(GameConstants.Boundary.BOTTOM - 80 + 1)).toFloat()  // y between 80 and 1170
+        ))
 
         // See reference map.png in assets folder to see what the map looks like
         // 12 x 14 map (16x16 pixels resolution)
@@ -88,12 +107,21 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
         val canvas : Canvas = holder.lockCanvas()  // Prepares the canvas for drawing
 
         // Background
-        canvas.drawColor(Color.BLACK)  // Resets the canvas to a black bg whenever the user touches the screen
+//        canvas.drawColor(Color.WHITE)  // Resets the canvas to a black bg whenever the user touches the screen
+        canvas.drawBitmap(scaledBackground, 0f, 1350f, null)  // Draw at the top-left corner (0, 0)
 
         testMap.draw(canvas)    // Paints the canvas with the map
 
+        /*
+            UI stuff
+         */
+        gameFrame.setBounds(0, 0, GameConstants.Frame.WIDTH, GameConstants.Frame.HEIGHT) // x, y, width, height
+        gameFrame.draw(canvas)
+
+//        dpadBackground.setBounds(0, 700, GameConstants.DpadBackground.WIDTH, GameConstants.DpadBackground.HEIGHT) // x, y, width, height
+
         //Score top left
-        canvas.drawText("Score: $score", 50f, 100f, scorePaint)
+        canvas.drawText("Score: $score", 50f, 1450f, scorePaint)
 
         drawPlayer(canvas)
         drawCharacter(canvas, basicSoul)
@@ -141,7 +169,10 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     private fun checkSoulCollision() {
         if (player.position.distance(basicSoul.position) < 50) {  // If player is close to the soul
             score++  // Increase score
-            basicSoul.position = PointF(random.nextInt(980).toFloat(), random.nextInt(1242).toFloat())  // Move soul to new random position
+            basicSoul.position = PointF(
+                (80 + random.nextInt(GameConstants.Boundary.RIGHT - 80 + 1)).toFloat(),
+                (80 + random.nextInt(GameConstants.Boundary.BOTTOM - 80 + 1)).toFloat()
+            )  // Move soul to new random position
         }
     }
     @SuppressLint("ClickableViewAccessibility")

@@ -16,6 +16,8 @@ import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
 
+    var showFrame = false
+
     // static class equivalent
     companion object {
         private lateinit var gameContext: Context  // no idea how to fix this lol

@@ -29,6 +29,38 @@ class GameConstants {
         companion object {
             // default is 300
             const val BASE_SPEED = 600
+            const val BOUNDARY_X = 980
+            const val BOUNDARY_Y = 1242
+        }
+    }
+
+    // Ung golden frame around the map
+    class Frame {
+        companion object {
+            // For Breiah
+            const val WIDTH = 1080
+            const val HEIGHT = 1335
+        }
+    }
+
+    // Ung stone background sa controls UI
+    class DpadBackground {
+        companion object {
+            // For Breiah
+            const val WIDTH = 1080
+            const val HEIGHT = 1335
+        }
+    }
+
+    class Boundary {
+        companion object {
+            // Sets the limits of where the player and souls can go
+            // Change this if it's different in your emulator
+            // For Breiah Pixel 3 XL
+            const val LEFT = 80
+            const val TOP = 80
+            const val RIGHT = 933
+            const val BOTTOM = 1170
         }
     }
 }
