@@ -44,6 +44,10 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     private val player : Player
     private val basicSoul : BasicSoul
 
+    private val paint = Paint().apply {
+        color = Color.GREEN  // dark green
+    }
+
     init {
         holder.addCallback(this)
         gameLoop = GameLoop(this)
@@ -100,11 +104,18 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     }
 
     private fun drawPlayer(canvas: Canvas) {
-        canvas.drawBitmap(
-            player.gameCharacterType.getSprite(player.animationIndex, player.facingDirection)!!,
-            player.hitbox.left,
-            player.hitbox.top,
-            null)
+//        canvas.drawBitmap(
+//            player.gameCharacterType.getSprite(player.animationIndex, player.facingDirection)!!,
+//            player.hitbox.left,
+//            player.hitbox.top,
+//            null)
+        canvas.drawRect(
+            player.position.x,
+            player.position.y,
+            player.position.x + 70f,  // Set the width of the square
+            player.position.y + 70f,  // Set the height of the square
+            paint
+        )
     }
 
     private fun drawCharacter(canvas: Canvas, character: Character) {
