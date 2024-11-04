@@ -42,6 +42,7 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     private var score = 0  // Track player score
 
     // TODO: Array for snake head, snake segments, and snake tail. maybe 2d array
+    // TODO: Add switch cases for changing dimensions based on device (cursed mano-mano way)
 
     // Testing Map
     private val testMap : GameMap

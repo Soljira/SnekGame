@@ -36,14 +36,6 @@
             android:contentDescription="Play Now"
             android:onClick="play" />
 
-        <ImageButton
-            android:id="@+id/btnInstructions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/button_instructions"
-            android:contentDescription="How to play"
-            android:onClick="instructions" />
 
         <ImageButton
             android:id="@+id/btnSettings"

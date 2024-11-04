@@ -38,12 +38,11 @@ class MainActivity : AppCompatActivity() {
 
         // TODO: Make a new intent for each button
         val intentPlayActivity = Intent(this, GamePanelActivity::class.java)
-        val intentInstructionsActivity = Intent(this, InstructionsActivity::class.java)
         val intentAboutActivity = Intent(this, AboutActivity::class.java)
+        val intentSettingsActivity = Intent(this, SettingsActivity::class.java)
 
         // Button initializations
         var buttonPlay : ImageButton = findViewById(R.id.btnPlay)
-        var buttonInstructions : ImageButton = findViewById(R.id.btnInstructions)
         var buttonSettings : ImageButton = findViewById(R.id.btnSettings)
         var buttonAbout : ImageButton = findViewById(R.id.btnAbout)
         var buttonQuit : ImageButton = findViewById(R.id.btnQuit)
@@ -68,19 +67,6 @@ class MainActivity : AppCompatActivity() {
 //            setContentView(GamePanel(this))
         }
 
-        buttonInstructions.setOnClickListener {
-            if (!isPressed)
-                isPressed = true
-            buttonInstructions.setBackgroundResource(R.drawable.button_instructions_pressed)
-
-            lifecycleScope.launch {
-                delay(200)
-                buttonInstructions.setBackgroundResource(R.drawable.button_instructions)
-                isPressed = false
-            }
-            startActivity(intentInstructionsActivity)
-        }
-
         buttonSettings.setOnClickListener {
             if (!isPressed)
                 isPressed = true
@@ -91,6 +77,7 @@ class MainActivity : AppCompatActivity() {
                 buttonSettings.setBackgroundResource(R.drawable.button_settings)
                 isPressed = false
             }
+            startActivity(intentSettingsActivity)
         }
 
         buttonAbout.setOnClickListener {
