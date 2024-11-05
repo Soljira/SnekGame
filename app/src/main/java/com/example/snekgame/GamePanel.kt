@@ -54,7 +54,7 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     private val scaledBackground = Bitmap.createScaledBitmap(
         backgroundBitmap,
         GameConstants.Frame.WIDTH,  // Width of the canvas
-        700,  // Height of the canvas
+        GameConstants.Frame.HEIGHT,  // Height of the canvas
         false
     )
 
@@ -113,7 +113,7 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
             UI stuff
          */
         // TODO: FIX THIS. use canvas.drawchuchu instead!
-        gameFrame.setBounds(0, 0, GameConstants.Frame.WIDTH, GameConstants.Frame.HEIGHT) // x, y, width, height
+        gameFrame.setBounds(0, 270, GameConstants.Frame.WIDTH, GameConstants.Frame.HEIGHT) // x, y, width, height
         gameFrame.draw(canvas)
 
 //        dpadBackground.setBounds(0, 700, GameConstants.DpadBackground.WIDTH, GameConstants.DpadBackground.HEIGHT) // x, y, width, height

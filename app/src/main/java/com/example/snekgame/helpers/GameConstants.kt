@@ -13,7 +13,7 @@ class GameConstants {
         companion object {
             const val DEFAULT_SIZE = 16
             // Use 8 when testing with the emulator, otherwise, use 6 for real phones
-            const val SCALE_MULTIPLIER = 6
+            const val SCALE_MULTIPLIER = 8
             const val SIZE = DEFAULT_SIZE * SCALE_MULTIPLIER
         }
     }
@@ -38,8 +38,8 @@ class GameConstants {
     class Frame {
         companion object {
             // For Breiah
-            const val WIDTH = 1080
-            const val HEIGHT = 1335
+            const val WIDTH = 1440
+            const val HEIGHT = 2100
         }
     }
 
@@ -57,10 +57,10 @@ class GameConstants {
             // Sets the limits of where the player and souls can go
             // Change this if it's different in your emulator
             // For Breiah Pixel 3 XL
-            const val LEFT = 80
-            const val TOP = 80
-            const val RIGHT = 933
-            const val BOTTOM = 1170
+            const val LEFT = 180
+            const val TOP = 180
+            const val RIGHT = 1933
+            const val BOTTOM = 1940
         }
     }
 }

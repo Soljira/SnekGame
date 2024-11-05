@@ -17,8 +17,8 @@ class GameMap(private val spriteIds: Array<IntArray>) {
             for (i in spriteIds[j].indices) {
                 canvas.drawBitmap(Floor.OUTSIDE.getSprite(
                     spriteIds[j][i]),
-                    i * GameConstants.Sprite.SIZE.toFloat(),
-                    j * GameConstants.Sprite.SIZE.toFloat(),
+                    (i) * GameConstants.Sprite.SIZE.toFloat(),
+                    (j + 3) * GameConstants.Sprite.SIZE.toFloat(),
                     null)
             }
         }
