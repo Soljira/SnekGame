@@ -50,11 +50,18 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     private val gameFrame = ContextCompat.getDrawable(context, R.drawable.game_frame) as VectorDrawable
     // TODO: @GAB @LEEIAN NANDITO PAUSE BUTTON LAGYAN KO MAMAYA NG IMAGE PERO YAN UNG BUTTON
 //    private val pauseButton = ContextCompat.getDrawable(context, R.drawable.game_frame) as VectorDrawable
-    private val backgroundBitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.dungeon)
+    private val backgroundBitmap : Bitmap = BitmapFactory.decodeResource(resources, R.drawable.dungeon)
     private val scaledBackground = Bitmap.createScaledBitmap(
         backgroundBitmap,
-        GameConstants.Frame.WIDTH * 2,  // Width of the canvas
+        GameConstants.Frame.WIDTH * 3,  // Width of the canvas
         GameConstants.Frame.HEIGHT * 2,  // Height of the canvas
+        false
+    )
+    private val dpadBackgroundBitmap : Bitmap = BitmapFactory.decodeResource(resources, R.drawable.dpad_background)
+    private val scaledDpadBackground = Bitmap.createScaledBitmap(
+        dpadBackgroundBitmap,
+        GameConstants.DpadBackground.WIDTH * 2,  // Width of the canvas
+        GameConstants.DpadBackground.HEIGHT * 2,  // Height of the canvas
         false
     )
 
@@ -108,6 +115,7 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
 //        canvas.drawBitmap()
 //        canvas.drawBitmap(scaledBackground, 0f, 1350f, null)  // Draw at the top-left corner (0, 0)
         canvas.drawBitmap(scaledBackground, 0f, 0f, null)  // Draw at the top-left corner (0, 0)
+        canvas.drawBitmap(scaledDpadBackground, 380f, 2130f, null)  // Draw behind the controls UI
 
         testMap.draw(canvas)    // Paints the canvas with the map
 
@@ -177,8 +185,8 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
             score++  // Increases score
             player.grow() // Adds a snake segment every time the player collects/eats a soul
             basicSoul.position = PointF(
-                (80 + random.nextInt(GameConstants.Boundary.RIGHT - 80 + 1)).toFloat(),  // no idea why this works
-                (80 + random.nextInt(GameConstants.Boundary.BOTTOM - 80 + 1)).toFloat()  // basta may range ung random; 80 is supposed to be the screen boundary
+                (410 + random.nextInt(GameConstants.Boundary.RIGHT - 410 + 1)).toFloat(),  // no idea why this works
+                (110 + random.nextInt(GameConstants.Boundary.BOTTOM - 110 + 1)).toFloat()  // basta may range ung random; 80 is supposed to be the screen boundary
             )
         }
     }  // End of checkSoulCollision function

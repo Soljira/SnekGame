@@ -47,8 +47,8 @@ class GameConstants {
     class DpadBackground {
         companion object {
             // For Breiah
-            const val WIDTH = 1080
-            const val HEIGHT = 1335
+            const val WIDTH = 350
+            const val HEIGHT = 300
         }
     }
 
@@ -58,7 +58,7 @@ class GameConstants {
             // Change this if it's different in your emulator
             // For Breiah Pixel 3 XL
             const val LEFT = 110
-            const val TOP = 110
+            const val TOP = 410
             const val RIGHT = 1250
             const val BOTTOM = 1900
         }
