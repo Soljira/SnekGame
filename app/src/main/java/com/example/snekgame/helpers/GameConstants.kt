@@ -28,7 +28,7 @@ class GameConstants {
     class Player {
         companion object {
             // default is 300
-            const val BASE_SPEED = 400
+            const val BASE_SPEED = 600
             const val BOUNDARY_X = 980
             const val BOUNDARY_Y = 1242
         }
@@ -57,10 +57,10 @@ class GameConstants {
             // Sets the limits of where the player and souls can go
             // Change this if it's different in your emulator
             // For Breiah Pixel 3 XL
-            const val LEFT = 180
-            const val TOP = 180
-            const val RIGHT = 1933
-            const val BOTTOM = 1940
+            const val LEFT = 110
+            const val TOP = 110
+            const val RIGHT = 1250
+            const val BOTTOM = 1900
         }
     }
 }

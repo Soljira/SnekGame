@@ -50,11 +50,11 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     private val gameFrame = ContextCompat.getDrawable(context, R.drawable.game_frame) as VectorDrawable
     // TODO: @GAB @LEEIAN NANDITO PAUSE BUTTON LAGYAN KO MAMAYA NG IMAGE PERO YAN UNG BUTTON
 //    private val pauseButton = ContextCompat.getDrawable(context, R.drawable.game_frame) as VectorDrawable
-    private val backgroundBitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.dpad_background)
+    private val backgroundBitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.dungeon)
     private val scaledBackground = Bitmap.createScaledBitmap(
         backgroundBitmap,
-        GameConstants.Frame.WIDTH,  // Width of the canvas
-        GameConstants.Frame.HEIGHT,  // Height of the canvas
+        GameConstants.Frame.WIDTH * 2,  // Width of the canvas
+        GameConstants.Frame.HEIGHT * 2,  // Height of the canvas
         false
     )
 
@@ -105,7 +105,9 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
 
         // Background
 //        canvas.drawColor(Color.BLACK)  // Resets the canvas to a black bg whenever the user touches the screen
-        canvas.drawBitmap(scaledBackground, 0f, 1350f, null)  // Draw at the top-left corner (0, 0)
+//        canvas.drawBitmap()
+//        canvas.drawBitmap(scaledBackground, 0f, 1350f, null)  // Draw at the top-left corner (0, 0)
+        canvas.drawBitmap(scaledBackground, 0f, 0f, null)  // Draw at the top-left corner (0, 0)
 
         testMap.draw(canvas)    // Paints the canvas with the map
 
