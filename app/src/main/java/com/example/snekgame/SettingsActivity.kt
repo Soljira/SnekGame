@@ -26,7 +26,7 @@ class SettingsActivity : AppCompatActivity() {
             if (isCheckedMusic) {
                 checkMusic.setImageResource(R.drawable.check_yes) // Set checked image
                 // TODO: Enable background music
-                // lEARN how to put music first lol
+                // TODO: lEARN how to put music first lol
             } else {
                 checkMusic.setImageResource(R.drawable.check_no) // Set unchecked image
                 // TODO: Disable background music

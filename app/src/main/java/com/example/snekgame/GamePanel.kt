@@ -41,7 +41,6 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     private var dpadLastDirection = TouchEvents.NONE  // For tracking the last DPAD button pressed by the user
     private var score = 0  // Track player score
 
-    // TODO: Array for snake head, snake segments, and snake tail. maybe 2d array
     // TODO: Add switch cases for changing dimensions based on device (cursed mano-mano way)
 
     // Testing Map
@@ -49,6 +48,7 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
 
     // UI elements
     private val gameFrame = ContextCompat.getDrawable(context, R.drawable.game_frame) as VectorDrawable
+    // TODO: @GAB @LEEIAN NANDITO PAUSE BUTTON LAGYAN KO MAMAYA NG IMAGE PERO YAN UNG BUTTON
 //    private val pauseButton = ContextCompat.getDrawable(context, R.drawable.game_frame) as VectorDrawable
     private val backgroundBitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.dpad_background)
     private val scaledBackground = Bitmap.createScaledBitmap(
@@ -60,10 +60,6 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
 
     private val player : Player
     private val basicSoul : BasicSoul
-
-    private val paint = Paint().apply {
-        color = Color.GREEN  // dark green
-    }
 
     init {
         holder.addCallback(this)
@@ -108,7 +104,7 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
         val canvas : Canvas = holder.lockCanvas()  // Prepares the canvas for drawing
 
         // Background
-//        canvas.drawColor(Color.WHITE)  // Resets the canvas to a black bg whenever the user touches the screen
+//        canvas.drawColor(Color.BLACK)  // Resets the canvas to a black bg whenever the user touches the screen
         canvas.drawBitmap(scaledBackground, 0f, 1350f, null)  // Draw at the top-left corner (0, 0)
 
         testMap.draw(canvas)    // Paints the canvas with the map
@@ -116,6 +112,7 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
         /*
             UI stuff
          */
+        // TODO: FIX THIS. use canvas.drawchuchu instead!
         gameFrame.setBounds(0, 0, GameConstants.Frame.WIDTH, GameConstants.Frame.HEIGHT) // x, y, width, height
         gameFrame.draw(canvas)
 
@@ -138,13 +135,17 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
 //            player.hitbox.left,
 //            player.hitbox.top,
 //            null)
-        canvas.drawRect(
-            player.position.x,
-            player.position.y,
-            player.position.x + 70f,  // Set the width of the square
-            player.position.y + 70f,  // Set the height of the square
-            paint
-        )
+//        canvas.drawRect(
+//            player.position.x,
+//            player.position.y,
+//            player.position.x + 70f,  // Set the width of the square
+//            player.position.y + 70f,  // Set the height of the square
+//            paint
+//        )
+        // The code above isn't needed kasi nasa Player class na
+        // Speaking of other classes handling relevant code
+        // TODO: Clean up GamePanel. Follow https://www.youtube.com/watch?v=UgOhE7TCc-o&list=PL4rzdwizLaxYqSDifOi7mUtyzdM6R_2sT&index=13 to organize code
+        player.draw(canvas)
     }
 
     private fun drawCharacter(canvas: Canvas, character: Character) {
@@ -154,12 +155,14 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
             character.hitbox.top,
             null)
 
-    }
+    }  // End of drawCharacter function
 
-    fun update(delta : Double) {
-        updatePlayerMove(delta)
-        basicSoul.update(delta)
-        checkSoulCollision()
+    fun update(delta: Double) {
+        if (!player.isGameOver()) {
+            updatePlayerMove(delta)
+            basicSoul.update(delta)
+            checkSoulCollision()
+        }
     }  // End of update function
 
     fun updatePlayerMove(delta: Double) {
@@ -168,17 +171,18 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     }
 
     private fun checkSoulCollision() {
-        if (player.position.distance(basicSoul.position) < 50) {  // If player is close to the soul
-            score++  // Increase score
+        if (player.position.distance(basicSoul.position) < 50) {
+            score++  // Increases score
+            player.grow() // Adds a snake segment every time the player collects/eats a soul
             basicSoul.position = PointF(
-                (80 + random.nextInt(GameConstants.Boundary.RIGHT - 80 + 1)).toFloat(),
-                (80 + random.nextInt(GameConstants.Boundary.BOTTOM - 80 + 1)).toFloat()
-            )  // Move soul to new random position
+                (80 + random.nextInt(GameConstants.Boundary.RIGHT - 80 + 1)).toFloat(),  // no idea why this works
+                (80 + random.nextInt(GameConstants.Boundary.BOTTOM - 80 + 1)).toFloat()  // basta may range ung random; 80 is supposed to be the screen boundary
+            )
         }
-    }
+    }  // End of checkSoulCollision function
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        // Only adds the snake to the canvas if the user is pressing down
         when (event?.action) {
             // when user is pressing down the button
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {

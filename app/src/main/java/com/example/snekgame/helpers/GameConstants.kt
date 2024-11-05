@@ -28,7 +28,7 @@ class GameConstants {
     class Player {
         companion object {
             // default is 300
-            const val BASE_SPEED = 600
+            const val BASE_SPEED = 400
             const val BOUNDARY_X = 980
             const val BOUNDARY_Y = 1242
         }
