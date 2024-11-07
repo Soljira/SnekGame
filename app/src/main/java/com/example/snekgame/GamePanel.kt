@@ -17,18 +17,20 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.core.content.ContextCompat
+import android.media.MediaPlayer
 
 import com.example.snekgame.entities.Character
 import com.example.snekgame.entities.Player
 import com.example.snekgame.entities.souls.BasicSoul
 
+
 import com.example.snekgame.inputs.TouchEvents
 import com.example.snekgame.environments.GameMap
 import com.example.snekgame.helpers.GameConstants
+import com.example.snekgame.helpers.SoundEffectsConstants
 import java.util.Random
 
 // TODO: Animate the snake and the souls
-// TODO: Put snake player in an ArrayList
 
 // : -> extends
 // super(context) is no longer needed as Kotlin automatically does that in SurfaceView(context)
@@ -65,6 +67,10 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
         false
     )
 
+    // Sound elements
+    private lateinit var eatSound: MediaPlayer
+    private lateinit var deathSound: MediaPlayer
+
     private val player : Player
     private val basicSoul : BasicSoul
 
@@ -99,6 +105,9 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
 
         // Initialize the GameMap with the provided sprite IDs
         testMap = GameMap(spriteIds)
+
+        eatSound = MediaPlayer.create(context, SoundEffectsConstants.EAT)
+        deathSound = MediaPlayer.create(context, SoundEffectsConstants.DEATH)
     }
 
     private val scorePaint = Paint().apply {
@@ -172,6 +181,9 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
             updatePlayerMove(delta)
             basicSoul.update(delta)
             checkSoulCollision()
+            if (player.isGameOver()) {
+                deathSound.start()
+            }
         }
     }  // End of update function
 
@@ -181,13 +193,15 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
     }
 
     private fun checkSoulCollision() {
-        if (player.position.distance(basicSoul.position) < 50) {
+        if (player.position.distance(basicSoul.position) < 100) {
             score++  // Increases score
             player.grow() // Adds a snake segment every time the player collects/eats a soul
+//            TODO: FIX THIS!
             basicSoul.position = PointF(
                 (410 + random.nextInt(GameConstants.Boundary.RIGHT - 410 + 1)).toFloat(),  // no idea why this works
                 (110 + random.nextInt(GameConstants.Boundary.BOTTOM - 110 + 1)).toFloat()  // basta may range ung random; 80 is supposed to be the screen boundary
             )
+            eatSound.start()
         }
     }  // End of checkSoulCollision function
 

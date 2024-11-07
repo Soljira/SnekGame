@@ -26,5 +26,7 @@
         <activity android:name=".GamePanelActivity"></activity>
         <activity android:name=".SettingsActivity"></activity>
         <activity android:name=".AboutActivity"></activity>
+        <service android:name=".helpers.BackgroundSoundService"/>
+        <service android:name=".helpers.GameBackgroundSoundService"/>
     </application>
 </manifest>

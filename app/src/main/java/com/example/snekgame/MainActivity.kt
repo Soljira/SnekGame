@@ -3,9 +3,8 @@ package com.example.snekgame
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
-import android.view.MotionEvent
-import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.ImageButton
@@ -13,11 +12,10 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
+import com.example.snekgame.helpers.BackgroundSoundService
+import com.example.snekgame.helpers.SoundEffectsConstants
 
 class MainActivity : AppCompatActivity() {
-
-    var showFrame = false
-
     // static class equivalent
     companion object {
         private lateinit var gameContext: Context  // no idea how to fix this lol
@@ -28,6 +26,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("MissingInflatedId", "ClickableViewAccessibility", "SuspiciousIndentation")
+
+    // Intents for music and sounds
+    lateinit var clickSound: MediaPlayer
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gameContext = this
@@ -41,6 +44,13 @@ class MainActivity : AppCompatActivity() {
         val intentAboutActivity = Intent(this, AboutActivity::class.java)
         val intentSettingsActivity = Intent(this, SettingsActivity::class.java)
 
+
+        // Start background music service
+        val musicServiceIntent = Intent(this, BackgroundSoundService::class.java)
+        startService(musicServiceIntent) // Start playing background music
+
+        clickSound = MediaPlayer.create(this, SoundEffectsConstants.CLICK)
+
         // Button initializations
         var buttonPlay : ImageButton = findViewById(R.id.btnPlay)
         var buttonSettings : ImageButton = findViewById(R.id.btnSettings)
@@ -52,10 +62,11 @@ class MainActivity : AppCompatActivity() {
 
         // Note to self: find a way to make these less repetitive. Maybe switch cases
         buttonPlay.setOnClickListener {
+            clickSound.start()
             // If it's ugly, switch back to simple if-else statement and drop the delay
             if (!isPressed)
                 isPressed = true
-                buttonPlay.setBackgroundResource(R.drawable.button_play_pressed)    // Changes the button image to a pressed version of it
+            buttonPlay.setBackgroundResource(R.drawable.button_play_pressed)    // Changes the button image to a pressed version of it
 
             lifecycleScope.launch {
                 delay(200)
@@ -68,6 +79,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         buttonSettings.setOnClickListener {
+            clickSound.start()
+
             if (!isPressed)
                 isPressed = true
             buttonSettings.setBackgroundResource(R.drawable.button_settings_pressed)
@@ -81,6 +94,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         buttonAbout.setOnClickListener {
+            clickSound.start()
+
             if (!isPressed)
                 isPressed = true
             buttonAbout.setBackgroundResource(R.drawable.button_about_pressed)
@@ -94,6 +109,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         buttonQuit.setOnClickListener {
+            clickSound.start()
+
             if (!isPressed)
                 isPressed = true
             buttonQuit.setBackgroundResource(R.drawable.button_quit_pressed)
@@ -108,4 +125,11 @@ class MainActivity : AppCompatActivity() {
         }
 
     }  // End of onCreate class
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Release the MediaPlayer resources
+        clickSound.release()
+    }
 }
