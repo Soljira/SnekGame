@@ -31,7 +31,7 @@ import com.example.snekgame.helpers.GameConstants
 import com.example.snekgame.helpers.SoundEffectsConstants
 import java.util.Random
 
-// TODO: Animate the snake and the souls
+// TODO: Snake sprite
 // TODO: THIS CODE SUCKS; PLEASE FIX IT AFTER PASSING
 // : -> extends
 // super(context) is no longer needed as Kotlin automatically does that in SurfaceView(context)
@@ -99,7 +99,7 @@ class GamePanel(context: Context) : SurfaceView(context), SurfaceHolder.Callback
         // TODO: MAKE 150 AND 410 CONSTANTS IN GAMECONSTANTS PLEASE T_T
         basicSoul = BasicSoul(PointF(
             (150 + random.nextInt(GameConstants.Boundary.RIGHT - 150 + 1)).toFloat(),  // no idea why this works
-            (410 + random.nextInt(GameConstants.Boundary.BOTTOM - 410 + 1)).toFloat()  // basta may range ung random; 150 is supposed to be the screen boundary
+            (410 + random.nextInt(GameConstants.Boundary.BOTTOM - 410 + 1)).toFloat()  // basta may range ung random; 150 and 410 are supposed to be the screen boundaries
         ))
 
         // See reference map.png in assets folder to see what the map looks like

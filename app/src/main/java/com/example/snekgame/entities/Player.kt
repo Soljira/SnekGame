@@ -115,12 +115,12 @@ class Player : Character(
     }
 
     private fun checkSelfCollision() {
-        if (segments.size < 4) return // Need at least 4 segments for collision
+        if (segments.size < 2) return // Need at least 2 segments for collision
 
         val head = segments[0]
         // Check collision with all segments except the first few
         // NO FUCKING IDEA WHAT THIS DOES. THANK YOU INDIANS
-        for (i in 4 until segments.size) {
+        for (i in 2 until segments.size) {
             val segment = segments[i]
             val distance = sqrt(
                 (head.x - segment.x).pow(2) +
