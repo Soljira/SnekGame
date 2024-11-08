@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
 
         var isPressed : Boolean = false
 
-        // TODO: Make a new intent for each button
         val intentPlayActivity = Intent(this, GamePanelActivity::class.java)
         val intentAboutActivity = Intent(this, AboutActivity::class.java)
         val intentSettingsActivity = Intent(this, SettingsActivity::class.java)

@@ -18,8 +18,11 @@ class Player : Character(
     PointF(540F, 500F), // center position
     GameCharacters.PLAYER
 ) {
+    private var isPaused: Boolean = false
+    private var previousDirection: Int = GameConstants.Face_Direction.NONE
+
     // List to store snake segments
-    private val segments = mutableListOf<PointF>()
+    var segments = mutableListOf<PointF>()
     private val segmentSize = 70f // Size of each snake segment
     private var isGameOver = false
 
@@ -34,39 +37,46 @@ class Player : Character(
     }
 
     fun update(delta: Double) {
-        if (isGameOver) return
+        if (isPaused || isGameOver) {
+            return  // Don't update if paused or game over
+        }
 
         val prevHeadPos = PointF(segments[0].x, segments[0].y)  // Store previous head position
 
 
-        when (facingDirection) {    // Updates head position based on direction
-            // This is only useful for sprites. Hindi na useful sa square kasi square lang naman
-            GameConstants.Face_Direction.UP -> {
-                if (segments[0].y > GameConstants.Boundary.TOP) {  // TODO: Change the Boundary enum
-                    segments[0].y -= delta.toFloat() * GameConstants.Player.BASE_SPEED
-                } else {
-                    handleCollision()
+        if (!isPaused) {
+            when (facingDirection) {    // Updates head position based on direction
+                // This is only useful for sprites. Hindi na useful sa square kasi square lang naman
+                GameConstants.Face_Direction.UP -> {
+                    if (segments[0].y > GameConstants.Boundary.TOP) {  // TODO: Change the Boundary enum
+                        segments[0].y -= delta.toFloat() * GameConstants.Player.BASE_SPEED
+                    } else {
+                        handleCollision()
+                    }
                 }
-            }
-            GameConstants.Face_Direction.DOWN -> {
-                if (segments[0].y < GameConstants.Boundary.BOTTOM) {
-                    segments[0].y += delta.toFloat() * GameConstants.Player.BASE_SPEED
-                } else {
-                    handleCollision()
+
+                GameConstants.Face_Direction.DOWN -> {
+                    if (segments[0].y < GameConstants.Boundary.BOTTOM) {
+                        segments[0].y += delta.toFloat() * GameConstants.Player.BASE_SPEED
+                    } else {
+                        handleCollision()
+                    }
                 }
-            }
-            GameConstants.Face_Direction.LEFT -> {
-                if (segments[0].x > GameConstants.Boundary.LEFT) {
-                    segments[0].x -= delta.toFloat() * GameConstants.Player.BASE_SPEED
-                } else {
-                    handleCollision()
+
+                GameConstants.Face_Direction.LEFT -> {
+                    if (segments[0].x > GameConstants.Boundary.LEFT) {
+                        segments[0].x -= delta.toFloat() * GameConstants.Player.BASE_SPEED
+                    } else {
+                        handleCollision()
+                    }
                 }
-            }
-            GameConstants.Face_Direction.RIGHT -> {
-                if (segments[0].x < GameConstants.Boundary.RIGHT) {
-                    segments[0].x += delta.toFloat() * GameConstants.Player.BASE_SPEED
-                } else {
-                    handleCollision()
+
+                GameConstants.Face_Direction.RIGHT -> {
+                    if (segments[0].x < GameConstants.Boundary.RIGHT) {
+                        segments[0].x += delta.toFloat() * GameConstants.Player.BASE_SPEED
+                    } else {
+                        handleCollision()
+                    }
                 }
             }
         }
@@ -75,24 +85,27 @@ class Player : Character(
         position = PointF(segments[0].x, segments[0].y)
 
         // Update following segments
-        for (i in 1 until segments.size) {
-            val prevPos = if (i == 1) prevHeadPos else PointF(segments[i-1].x, segments[i-1].y)
-            val currentPos = segments[i]
+        if (!isPaused) {
+            for (i in 1 until segments.size) {
+                val prevPos =
+                    if (i == 1) prevHeadPos else PointF(segments[i - 1].x, segments[i - 1].y)
+                val currentPos = segments[i]
 
-            // Calculate direction to previous segment
-            val dx = prevPos.x - currentPos.x
-            val dy = prevPos.y - currentPos.y
-            val distance = sqrt(dx.pow(2) + dy.pow(2))
+                // Calculate direction to previous segment
+                val dx = prevPos.x - currentPos.x
+                val dy = prevPos.y - currentPos.y
+                val distance = sqrt(dx.pow(2) + dy.pow(2))
 
-            // Move segment towards previous segment if too far
-            if (distance > segmentSize) {
-                val ratio = (distance - segmentSize) / distance
-                currentPos.x += dx * ratio
-                currentPos.y += dy * ratio
+                // Move segment towards previous segment if too far
+                if (distance > segmentSize) {
+                    val ratio = (distance - segmentSize) / distance
+                    currentPos.x += dx * ratio
+                    currentPos.y += dy * ratio
+                }
             }
-        }
 
-        checkSelfCollision()
+            checkSelfCollision()
+        }
     }
 
     fun grow() {
@@ -139,8 +152,19 @@ class Player : Character(
     }
 
     fun isGameOver(): Boolean = isGameOver
+    fun setGameOver(boolean : Boolean) {
+        isGameOver = boolean
+    }
+
 
     fun setDirection(direction: Int) {
+        println("Player update - isPaused: $isPaused, isGameOver: $isGameOver")
+
+        if (isPaused || isGameOver) {
+            println("Player update - early return due to pause/gameover")
+            return  // Don't update if paused or game over
+        }
+
         when (direction) {
         // added a feature that prevents 180-degree turns
             TouchEvents.UP -> {
@@ -164,5 +188,24 @@ class Player : Character(
                 }
             }
         }
+    }
+
+    fun setPaused(paused: Boolean) {
+        println("Setting player pause to: $paused")
+        isPaused = paused
+        if (paused) {
+            previousDirection = facingDirection
+            facingDirection = GameConstants.Face_Direction.NONE
+        }
+//        TODO: No idea why the snake jumps after unpausing
+//        } else {
+//            facingDirection = previousDirection
+//        }
+    }
+
+    fun reset() {
+        resetPosition()
+        resetAnimation()
+        facingDirection = GameConstants.Face_Direction.DOWN
     }
 }

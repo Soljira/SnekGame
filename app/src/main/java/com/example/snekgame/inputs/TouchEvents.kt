@@ -36,7 +36,7 @@ class TouchEvents(gamePanel: GamePanel) {
 
         // Calculate button positions
         val centerX = screenWidth / 2 - buttonWidth / 2
-        val centerY = screenHeight - (buttonHeight * 3.2f).toInt()
+        val centerY = screenHeight - (buttonHeight * 2.8F).toInt()
 
         // Set button boundaries for touch detection
         upButton.set(

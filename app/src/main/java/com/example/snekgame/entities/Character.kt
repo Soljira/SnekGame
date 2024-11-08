@@ -20,6 +20,7 @@ abstract class Character(
     var animationIndex = 0
     var facingDirection = GameConstants.Face_Direction.DOWN
 
+    private val initialPosition: PointF = PointF(position.x, position.y)
 
     protected fun updateAnimation() {
         animationTick++
@@ -38,6 +39,13 @@ abstract class Character(
     fun resetAnimation() {
         animationTick = 0
         animationIndex = 0
-
     }
+
+    fun resetPosition() {
+        // Resets the character to the starting position
+        this@Character.position.x = initialPosition.x
+        this@Character.position.y = initialPosition.y
+    }
+
+
 }

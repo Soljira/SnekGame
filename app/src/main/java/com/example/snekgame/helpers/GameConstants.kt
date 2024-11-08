@@ -3,6 +3,7 @@ package com.example.snekgame.helpers
 class GameConstants {
     class Face_Direction {
         companion object {
+            const val NONE = -1
             const val DOWN = 0
             const val UP = 1
             const val LEFT = 2
@@ -28,7 +29,7 @@ class GameConstants {
     class Player {
         companion object {
             // default is 300
-            const val BASE_SPEED = 600
+            const val BASE_SPEED = 300
             const val BOUNDARY_X = 980
             const val BOUNDARY_Y = 1242
         }
